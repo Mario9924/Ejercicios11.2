@@ -41,8 +41,8 @@ public class Ejercicio1 {
         String pass = "";
         try (
                 Connection conn = DriverManager.getConnection(url, user, pass);
-                Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                ResultSet rs = stmt.executeQuery("Select * from Jugadores"); // USAR PARA CONSULTAS
+                Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                ResultSet rs = stmt.executeQuery("Select * from jugadores"); // USAR PARA CONSULTAS
                 
             ){
             
@@ -60,28 +60,32 @@ public class Ejercicio1 {
             rs.beforeFirst();
             
             while(rs.next()){
-                estaturaMediaJugadores  = Double.parseDouble(rs.getString("Altura").replace("-", "."));
+                estaturaMediaJugadores  += Double.parseDouble(rs.getString("Altura").replace("-", "."));
                 numeroJugadores++;
             }
             
             estaturaMediaJugadores = estaturaMediaJugadores / numeroJugadores;
+            System.out.println("La altura media es de: " + estaturaMediaJugadores);
             
             // A - Jugadores más altos
+            System.out.println("Jugadores cuya altura es superior a " + estaturaMediaJugadores);
             rs.beforeFirst();
             while(rs.next()){
                 if ( Double.parseDouble(rs.getString("Altura").replace("-", ".")) > estaturaMediaJugadores){
                     System.out.println("Nombre: " + rs.getString("Nombre") + ". Altura " + rs.getString("Altura").replace("-", "."));
                 }
             }
+            System.out.println("");
             
             // B - Jugadores más bajos
+            System.out.println("Jugadores cuya altura es inforior a " + estaturaMediaJugadores);
             rs.beforeFirst();
             while(rs.next()){
                 if ( Double.parseDouble(rs.getString("Altura").replace("-", ".")) < estaturaMediaJugadores){
                     System.out.println("Nombre: " + rs.getString("Nombre") + ". Altura " + rs.getString("Altura").replace("-", "."));
                 }
             }
-            
+            System.out.println("");
         }  catch(SQLException sqlex){
             System.err.println("Ha habido un error a la hora de trabajar con la base de datos: " + sqlex);
         }
