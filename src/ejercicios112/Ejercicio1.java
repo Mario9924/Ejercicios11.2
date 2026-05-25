@@ -56,7 +56,7 @@ public class Ejercicio1 {
                 La altura está almacenada en el formato String "6-9", lo "convertimos en double" tras 
                     reemplazar el caracter '-' por '.' de modo que quedará cómo "6.9"
             */
-            
+            /*
             rs.beforeFirst();
             
             while(rs.next()){
@@ -86,6 +86,17 @@ public class Ejercicio1 {
                 }
             }
             System.out.println("");
+            */
+            // C - Jugadores de los Lakers
+            System.out.println("A continuación mostramos los jugadores que pertenecen al equipo \"Lakers\"");
+            rs.beforeFirst();
+            
+            while(rs.next()){
+                if (rs.getString("nombre_equipo").equalsIgnoreCase("Lakers")){
+                    System.out.println(rs.getString("Nombre"));
+                }
+            }
+            
         }  catch(SQLException sqlex){
             System.err.println("Ha habido un error a la hora de trabajar con la base de datos: " + sqlex);
         }
