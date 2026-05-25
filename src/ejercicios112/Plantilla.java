@@ -3,7 +3,7 @@ package ejercicios112;
 import java.sql.*;
 
 /**
- *
+ * 
  * @author Mario Gutiérrez
  * @see
  * @version 1.0
