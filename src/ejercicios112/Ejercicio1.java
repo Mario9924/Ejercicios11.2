@@ -86,7 +86,7 @@ public class Ejercicio1 {
                 }
             }
             System.out.println("");
-            */
+            
             // C - Jugadores de los Lakers
             System.out.println("A continuación mostramos los jugadores que pertenecen al equipo \"Lakers\"");
             rs.beforeFirst();
@@ -94,6 +94,25 @@ public class Ejercicio1 {
             while(rs.next()){
                 if (rs.getString("nombre_equipo").equalsIgnoreCase("Lakers")){
                     System.out.println(rs.getString("Nombre"));
+                }
+            }
+            System.out.println("");
+            */
+            
+            // E - Un listado con los nombres cuyo apellido empieza por J.
+            rs.beforeFirst();
+            System.out.println("A continuación mostramos a los jugadores cuyo apellido comienza por \"J\".");
+            while(rs.next()){
+                // No todos los campos del nombre están separados por espacio, por ello, comprobamos primero que estén separados
+                if (rs.getString("Nombre").contains(" ")){
+                    String[] nombreCompleto = rs.getString("nombre").split(" ");
+                    String apellido = nombreCompleto[1];
+                    if (apellido.charAt(0) == 'J' || apellido.charAt(0) == 'j') {
+                        System.out.println(rs.getString("nombre"));
+                    }
+                } else {
+                    // Muestro a mayores los nombres que NO están separados por un espacio
+                    System.err.println("NOMBRE SIN ESPACIO EN BLANCO: " + rs.getString("Nombre"));
                 }
             }
             
