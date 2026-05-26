@@ -1,11 +1,17 @@
 package ejercicios112;
 
 import java.sql.*;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 /**
- * 
+ * Esta aplicación permite reproducir un vídeo desde una url guardada en en una
+ * base de datos. Al usuario le damos dos opciones: Reproducir canción Añadir
+ * canción
+ *
  * @author Mario Gutiérrez
  * @see
+ * https://classroom.google.com/u/1/c/ODA3NDY5OTY5MTcz/a/ODY0OTY3MTEwMzc0/details
  * @version 1.0
  */
 public class Ejercicio2 {
@@ -15,31 +21,57 @@ public class Ejercicio2 {
      */
     public static void main(String[] args) {
         // Declaración de variables
-        String url = "jdbc:mysql://localhost:3307/BASE-DE-DATOS";
+        Scanner reader = new Scanner(System.in);
+        int opcionMenuIn = 0;
+        String nombreCancionIn = "";
+        String urlCancionIn = "";
+        boolean continuar = true;
+        String url = "jdbc:mysql://localhost:3307/ejercicio112";
         String user = "root";
         String pass = "";
         try (
-                Connection conn = DriverManager.getConnection(url, user, pass);
-                Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                ResultSet rs = stmt.executeQuery("CONSULTA A LA BASE DE DATOS"); // USAR PARA CONSULTAS
-                
-            ){
-            
+                Connection conn = DriverManager.getConnection(url, user, pass); Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY); ResultSet rs = stmt.executeQuery("select * from canciones"); // USAR PARA CONSULTAS
+                ) {
+
             //se carga la clase del Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-            
-            /*
-                Si lo que queremos es realizar sentencias DDL: Create - Drop - Alter - etc
-                 tenemos que usar 
-                stmt.executeUpdate("SENTENCIA DDL") ya que no devuelve un result set, solamente el número de registros modificados
-            */
-            
-        }  catch(SQLException sqlex){
+            while (continuar) {
+                try {
+                    do {
+                        System.out.println("Bienvenido al reproductor de música. Elige una opción"
+                                + "\n1 - Reproducir cancion"
+                                + "\n2 - Añadir canción"
+                                + "\nOtro - salir de la aplicación");
+                        opcionMenuIn = reader.nextInt();
+                    } while (opcionMenuIn <= 0 || opcionMenuIn > 3);
+                    switch (opcionMenuIn) {
+                        case 1:
+                            
+                            break;
+                        case 2:
+                            System.out.println("Para introducir los datos de la canción necesitamos que nos indiques:"
+                                    + "\nTitulo de la canción:");
+                            nombreCancionIn = reader.nextLine();
+                            System.out.println("Url de la canción");
+                            break;
+                        default:
+                            System.out.println("Hasta luego!!");
+                            continuar = false;
+                            break;
+                    }
+                } catch (InputMismatchException ime) {
+                    System.err.println("El tipo de dato introducido no es correcto: " + ime);
+                    reader.nextLine();
+                } catch (Exception e) {
+                    System.out.println("ERROR INESPERADO: " + e);
+                }
+            }
+
+        } catch (SQLException sqlex) {
             System.err.println("Ha habido un error a la hora de trabajar con la base de datos: " + sqlex);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Error: " + e);
         }
     }
-    
+
 }
