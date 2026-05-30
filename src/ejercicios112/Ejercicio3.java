@@ -36,14 +36,17 @@ public class Ejercicio3 {
         String pass = "";
         HashMap<String, Integer> listadoLenguas = new HashMap<>();
         try (
-                Connection conn = DriverManager.getConnection(url, user, pass); Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE); ResultSet rs = stmt.executeQuery("select * from countrylanguage"); // USAR PARA CONSULTAS
+                Connection conn = DriverManager.getConnection(url, user, pass); 
+                Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE); 
+                ResultSet rs = stmt.executeQuery("select * from countrylanguage"); // USAR PARA CONSULTAS
                 ) {
 
             //se carga la clase del Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Listado de lenguas y número de ellas
-            /*
+            /* 
+            Se comenta puesto que son muchas líneas
             while(rs.next()){
                 String lenguaje = rs.getString("language");
                 if (listadoLenguas.containsKey(lenguaje)){
@@ -65,7 +68,7 @@ public class Ejercicio3 {
                     System.out.println(rs.getString("language"));
                 }
             }
-            
+            /*
             System.out.println("Opción 2: ");
             // Opción 2 - Mediante un nuevo result set a partir de otra consulta distinta a la BD
             try (
@@ -80,7 +83,28 @@ public class Ejercicio3 {
             } catch (Exception e) {
                 System.out.println("Error: " + e);
             }
+            
+             */
+            //Mostramos los países que hablan español y el porcentaje
 
+            rs.beforeFirst();
+            while (rs.next()) {
+                if (rs.getString("language").equalsIgnoreCase("spanish")) {
+                    try (Statement stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE); 
+                            ResultSet rs2 = stmt2.executeQuery("select * from country where code = '" + rs.getString("countrycode") + "'");) {
+                        while (rs2.next()) {
+                            System.out.print(rs2.getString("name"));
+                        }
+                    } catch (SQLException sqlex) {
+                        System.err.println("Ha habido un error a la hora de trabajar con la base de datos: " + sqlex);
+                    } catch (Exception e) {
+                        System.out.println("Error: " + e);
+                    }
+                    System.out.print(" - " + rs.getString("percentage") + "%\n");
+                }
+            }
+            
+            
         } catch (SQLException sqlex) {
             System.err.println("Ha habido un error a la hora de trabajar con la base de datos: " + sqlex);
         } catch (Exception e) {
