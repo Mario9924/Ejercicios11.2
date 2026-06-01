@@ -1,6 +1,7 @@
 package ejercicios112;
 
 import java.sql.*;
+import java.util.HashMap;
 
 /**
  *
@@ -30,6 +31,9 @@ public class Ejercicio4 {
         String url = "jdbc:mysql://localhost:3307/datos_climaticos";
         String user = "root";
         String pass = "";
+        HashMap<String, Double> temperaturaMediaAnual = new HashMap<>();
+        String ciudadTempMediaAnualMax = "";
+        double tempMediaAnualMax = 0.0;
         try (
                 Connection conn = DriverManager.getConnection(url, user, pass);//
                 Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);//
@@ -40,11 +44,32 @@ public class Ejercicio4 {
             //se carga la clase del Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
             
-            /*
-                Si lo que queremos es realizar sentencias DDL: Create - Drop - Alter - etc
-                 tenemos que usar 
-                stmt.executeUpdate("SENTENCIA DDL") ya que no devuelve un result set, solamente el número de registros modificados
-            */
+            // - La ciudad con la temperatura media anual más elevada.
+            
+            while (rs.next()){
+                // Guardamos en el hashmap                
+                String ciudad = rs.getString("ciudad");
+                double tempMedia = rs.getDouble("Tmed");
+                
+                // Comprobamos que exista
+                if (temperaturaMediaAnual.containsKey(ciudad)){
+                    // Comprobamos que la tempMedia sea superior a la guardada y actualizamos si se cumple
+                    if (tempMedia > temperaturaMediaAnual.get(ciudad)){
+                        temperaturaMediaAnual.replace(ciudad, tempMedia); // Actualizamos la información
+                    }
+                } else {
+                    temperaturaMediaAnual.put(ciudad, tempMedia);
+                }
+            }
+            
+            // Recorremos los resultados anteriores para obtener la ciudad con mayor temperatura media Anual
+            for (String key : temperaturaMediaAnual.keySet()){                
+                if (temperaturaMediaAnual.get(key) > tempMediaAnualMax){
+                    tempMediaAnualMax = temperaturaMediaAnual.get(key);
+                    ciudadTempMediaAnualMax = key;
+                }
+            }
+            System.out.println("Ciudad: " + ciudadTempMediaAnualMax  + " temperatura: " + tempMediaAnualMax);
             
         }  catch(SQLException sqlex){
             System.err.println("Ha habido un error a la hora de trabajar con la base de datos: " + sqlex);
